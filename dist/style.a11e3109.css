@@ -31836,6 +31836,13 @@ video {
   --tw-backdrop-sepia: sepia(100%);
 }
 
+.spinner {
+  border-top-color: #4a5568;
+  border-left-color: #ccc;
+  border-right-color: #ccc;
+  border-bottom-color: #ccc;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
@@ -187395,6 +187402,6 @@ video {
     --tw-backdrop-sepia: sepia(100%);
   }
 }
-  
+
 
 /*# sourceMappingURL=/style.a11e3109.css.map */

@@ -1,38 +1,25 @@
 import axios from 'axios';
 
-export const state = {
-    loading: false,
-    error: null
-};
+export let error = null;
 
-export let books = [];
-
-export const getBookResults = async (query) => {
+export const getBookResults = async (query, startIndex = '0') => {
     try {
-        //Set loading state for loading spinner
-        state.loading = true;
         //Fetch books data from Google Books API based on search term
-        const { data } = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
-        console.log(data);
-        //Grab relevant info from data response and save to books variable
-        books = data.items.map(book => {
+        const { data } = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}`);
+        if (!data.items) error = "We couldn't find any books matching that search. Please try again.";
+        //Grab relevant info from data response and return it
+        return data.items.map(book => {
             return {
                 title: book.volumeInfo.title,
                 authors: book.volumeInfo.authors || [],
                 publisher: book.volumeInfo.publisher || 'Unknown',
-                images: book.volumeInfo.imageLinks,
+                images: book.volumeInfo.imageLinks || '',
                 link: book.volumeInfo.infoLink
             };
         });
-        console.log(books);
-        //Reset loading state 
-        state.loading = false;
-    } catch (error) {
-        //Reset loading state
-        state.loading = false;
-        //Add error message to state
-        state.error = error;
-        alert(error);
+    } catch (err) {
+        //Add error message to global variable
+        throw new Error(err);
     }
 };
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Tailwind CSS + Parcel Boilerplate</title>
+    <title>My Bookshelf | Search for books</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="/style.a11e3109.css" rel="stylesheet">
@@ -9,20 +9,21 @@
 
   <body class="font-sans">
     <header class="text-xl font-bold text-center my-10 text-gray-700">
-  <h1 class="text-6xl font-thin tracking-wide">
+  <h1 class="lg:text-6xl md:text-5xl font-thin tracking-wide">
     <strong class="text-blue-900">MY</strong>BOOKSHELF
   </h1>
 </header>
 
     <form id="search" class="container mx-auto flex justify-center">
-  <input class="lg:w-2/6 md:w-3/6 p-2 border-2 border-gray-300 focus:outline-none rounded-sm" type="text" placeholder="Enter book title...">
-  <button type="submit" class="bg-gray-700 hover:bg-gray-600 p-2 text-white rounded-sm shadow-sm font-sans">
+  <input class="lg:w-2/6 md:w-3/6 p-2 border-2 border-gray-300 focus:outline-none rounded-sm" type="text" placeholder="Find a good read...">
+  <button id="search-button" type="submit" class="bg-gray-700 hover:bg-gray-600 p-2 text-white rounded-sm shadow-sm font-sans">
     Search
   </button>
 </form>
 
     <div id="message-container"></div>
     <div id="books-container" class="container p-5 my-3 grid lg:grid-cols-2 gap-3"></div>
+    <div id="pagination-container" class="flex justify-between"></div>
   </body>
 
   <script src="/controller.b38d9f55.js"></script>

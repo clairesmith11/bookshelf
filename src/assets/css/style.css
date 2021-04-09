@@ -1,7 +1,13 @@
 /* purgecss start ignore */
-  @tailwind  base;
-  @tailwind  components;
-  /* purgecss end ignore */
-  
-  @tailwind  utilities;
-  
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+
+@tailwind utilities;
+
+.spinner {
+  border-top-color: #4a5568;
+  border-left-color: #ccc;
+  border-right-color: #ccc;
+  border-bottom-color: #ccc;
+}

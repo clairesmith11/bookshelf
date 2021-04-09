@@ -2674,7 +2674,7 @@ module.exports = require('./lib/axios');
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.showBook = exports.getBookResults = exports.books = exports.state = void 0;
+exports.showBook = exports.getBookResults = exports.error = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -2684,64 +2684,51 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var state = {
-  loading: false,
-  error: null
-};
-exports.state = state;
-var books = [];
-exports.books = books;
+var error = null;
+exports.error = error;
 
 var getBookResults = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(query) {
-    var _yield$axios$get, data;
+    var startIndex,
+        _yield$axios$get,
+        data,
+        _args = arguments;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            //Set loading state for loading spinner
-            state.loading = true; //Fetch books data from Google Books API based on search term
-
+            startIndex = _args.length > 1 && _args[1] !== undefined ? _args[1] : '0';
+            _context.prev = 1;
             _context.next = 4;
-            return _axios.default.get("https://www.googleapis.com/books/v1/volumes?q=".concat(query));
+            return _axios.default.get("https://www.googleapis.com/books/v1/volumes?q=".concat(query, "&startIndex=").concat(startIndex));
 
           case 4:
             _yield$axios$get = _context.sent;
             data = _yield$axios$get.data;
-            console.log(data); //Grab relevant info from data response and save to books variable
+            if (!data.items) exports.error = error = "We couldn't find any books matching that search. Please try again."; //Grab relevant info from data response and return it
 
-            exports.books = books = data.items.map(function (book) {
+            return _context.abrupt("return", data.items.map(function (book) {
               return {
                 title: book.volumeInfo.title,
                 authors: book.volumeInfo.authors || [],
                 publisher: book.volumeInfo.publisher || 'Unknown',
-                images: book.volumeInfo.imageLinks,
+                images: book.volumeInfo.imageLinks || '',
                 link: book.volumeInfo.infoLink
               };
-            });
-            console.log(books); //Reset loading state 
+            }));
 
-            state.loading = false;
-            _context.next = 17;
-            break;
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](1);
+            throw new Error(_context.t0);
 
-          case 12:
-            _context.prev = 12;
-            _context.t0 = _context["catch"](0);
-            //Reset loading state
-            state.loading = false; //Add error message to state
-
-            state.error = _context.t0;
-            alert(_context.t0);
-
-          case 17:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 12]]);
+    }, _callee, null, [[1, 10]]);
   }));
 
   return function getBookResults(_x) {
@@ -2795,34 +2782,61 @@ exports.showBook = showBook;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.showMessage = exports.showBookResults = void 0;
+exports.showPagination = exports.clearSpinner = exports.showSpinner = exports.showMessage = exports.showBookResults = void 0;
 var booksContainer = document.getElementById('books-container');
 var messageContainer = document.getElementById('message-container');
+var searchButton = document.getElementById('search-button');
+var paginationContainer = document.getElementById('pagination-container'); /////RENDER BOOKS TO DOM/////
 
 var showBookResults = function showBookResults(booksArray) {
   //TODO: change this line
-  if (!booksArray) return; //Clear existing results
+  if (!booksArray || booksArray.length === 0) showMessage('No results. Please try again!'); //Clear existing results
 
   booksContainer.innerHTML = '';
   messageContainer.innerHTML = ''; //Render book card for each search result
 
   booksArray.forEach(function (book) {
-    var markup = "\n        <div class=\"bg-gray-100 p-3 flex justify-evenly rounded-sm w-full\">\n            <img\n            class=\"w-40 h-auto mx-0\"\n            src=".concat(book.images.thumbnail, "\n            alt=").concat(book.title, "\n            />\n            <div class=\"flex flex-col justify-center ml-2 w-3/6\">\n            <h2 class=\"text-xl mb-3\">\n                <strong>").concat(book.title, "</strong>\n            </h2>\n            <h3><strong>Author:</strong> ").concat(book.authors.length > 0 ? book.authors.map(function (auth) {
+    var markup = "\n        <div class=\"bg-gray-100 p-3 flex justify-evenly rounded-sm shadow-sm w-full\">\n            <img\n            class=\"w-40 h-auto mx-0\"\n            src=".concat(book.images.thumbnail, "\n            alt=").concat(book.title, "\n            />\n            <div class=\"flex flex-col justify-center ml-2 w-3/6\">\n            <h2 class=\"text-xl mb-3\">\n                <strong>").concat(book.title, "</strong>\n            </h2>\n            <h3><strong>Author:</strong> ").concat(book.authors.length > 0 ? book.authors.map(function (auth) {
       return auth;
     }).join(', ') : 'Unknown', "</h3>\n            <h3><strong>Publisher:</strong> ").concat(book.publisher, "</h3>\n            <a\n                target=\"blank\"\n                href=").concat(book.link, "\n                ><button\n                class=\"bg-gray-700 text-white p-2 rounded-sm shadow hover:bg-gray-600 mt-5\"\n                >\n                More info\n                </button></a\n            >\n            </div>\n        </div>\n    ");
     booksContainer.insertAdjacentHTML('beforeend', markup);
   });
-};
+}; /////RENDER ERROR MESSAGES/////
+
 
 exports.showBookResults = showBookResults;
 
 var showMessage = function showMessage(message) {
   var messageElement = "\n        <div class=\"bg-blue-900 w-4/6 mx-auto my-5 p-3 rounded-sm text-white\">\n            <p>".concat(message, "</p>\n        </div>\n    ");
-  booksContainer.innerHTML = '';
+  messageContainer.innerHTML = '';
   messageContainer.insertAdjacentHTML('afterbegin', messageElement);
-};
+}; /////RENDER LOADING SPINNER/////
+
 
 exports.showMessage = showMessage;
+
+var showSpinner = function showSpinner() {
+  var spinnerElement = "\n    <div class=\"spinner animate-spin rounded-full border-2 border-t-2 h-5 w-5\"></div>\n    ";
+  searchButton.innerHTML = spinnerElement;
+}; ////CLEAR LOADING SPINNER////
+
+
+exports.showSpinner = showSpinner;
+
+var clearSpinner = function clearSpinner() {
+  searchButton.innerHTML = 'Search';
+}; /////RENDER PAGINATION NAV/////
+
+
+exports.clearSpinner = clearSpinner;
+
+var showPagination = function showPagination() {
+  var markup = "<div>&larr;Previous</div>\n        <div>&rarr;Next</div>";
+  paginationContainer.innerHTML = '';
+  paginationContainer.insertAdjacentHTML(markup);
+};
+
+exports.showPagination = showPagination;
 },{}],"assets/js/controller.js":[function(require,module,exports) {
 "use strict";
 
@@ -2842,6 +2856,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 ///DOM ELEMENTS
 var searchForm = document.getElementById('search');
+var searchButton = document.getElementById('search-button');
 
 var searchHandler = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
@@ -2850,8 +2865,8 @@ var searchHandler = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            e.preventDefault();
             query = searchForm.elements[0].value;
+            e.preventDefault();
 
             if (query) {
               _context.next = 6;
@@ -2859,23 +2874,40 @@ var searchHandler = /*#__PURE__*/function () {
             }
 
             view.showMessage('Please search for a book!');
-            _context.next = 10;
+            _context.next = 18;
             break;
 
           case 6:
-            _context.next = 8;
+            //Show loading spinner while awaiting results
+            view.showSpinner(); //Get books from api
+
+            _context.prev = 7;
+            _context.next = 10;
             return model.getBookResults(query);
 
-          case 8:
-            booksArray = model.books;
-            view.showBookResults(booksArray);
-
           case 10:
+            booksArray = _context.sent;
+            //Render the list of books
+            view.showBookResults(booksArray);
+            _context.next = 17;
+            break;
+
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context["catch"](7);
+            //Show error message
+            view.showMessage('We could not find any books for that search. Please try again.');
+
+          case 17:
+            //Remove the loading spinner 
+            view.clearSpinner();
+
+          case 18:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee);
+    }, _callee, null, [[7, 14]]);
   }));
 
   return function searchHandler(_x) {
@@ -2887,7 +2919,6 @@ var searchHandler = /*#__PURE__*/function () {
 document.addEventListener('submit', function (e) {
   return searchHandler(e);
 });
-view.showBookResults();
 },{"regenerator-runtime/runtime":"../node_modules/regenerator-runtime/runtime.js","./model":"assets/js/model.js","./view":"assets/js/view.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2916,7 +2947,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53154" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58562" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

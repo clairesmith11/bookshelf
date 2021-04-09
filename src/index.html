@@ -12,13 +12,13 @@
 
   <body class="font-sans">
     <include src="partials/header.html"></include>
-    <content>
-      <div class="text-5xl font-bold text-center">You're all set!</div>
-      <div class="text-5xl font-bold text-center bg-blue-500">
-        You're all set!
-      </div>
-    </content>
+    <include src="partials/searchBar.html"></include>
+    <div id="message-container"></div>
+    <div
+      id="books-container"
+      class="container p-5 my-3 grid lg:grid-cols-2 gap-3"
+    ></div>
   </body>
 
-  <script src="assets/js/index.js"></script>
+  <script src="assets/js/controller.js"></script>
 </html>

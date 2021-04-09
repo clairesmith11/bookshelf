@@ -8,19 +8,22 @@
   <script src="/style.a11e3109.js"></script></head>
 
   <body class="font-sans">
-    <header class="text-xl font-bold text-center my-10 text-gray-600">
-  <div>
-      Tailwind CSS + Parcel Starter
-  </div>
+    <header class="text-xl font-bold text-center my-10 text-gray-700">
+  <h1 class="text-6xl font-thin tracking-wide">
+    <strong class="text-blue-900">MY</strong>BOOKSHELF
+  </h1>
 </header>
-  
-    <content>
-      <div class="text-5xl font-bold text-center">You're all set!</div>
-      <div class="text-5xl font-bold text-center bg-blue-500">
-        You're all set!
-      </div>
-    </content>
+
+    <form id="search" class="container mx-auto flex justify-center">
+  <input class="lg:w-2/6 md:w-3/6 p-2 border-2 border-gray-300 focus:outline-none rounded-sm" type="text" placeholder="Enter book title...">
+  <button type="submit" class="bg-gray-700 hover:bg-gray-600 p-2 text-white rounded-sm shadow-sm font-sans">
+    Search
+  </button>
+</form>
+
+    <div id="message-container"></div>
+    <div id="books-container" class="container p-5 my-3 grid lg:grid-cols-2 gap-3"></div>
   </body>
 
-  <script src="/js.5c615dc2.js"></script>
+  <script src="/controller.b38d9f55.js"></script>
 </html>
